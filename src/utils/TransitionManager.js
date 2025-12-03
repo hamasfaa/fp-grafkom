@@ -251,6 +251,33 @@ export class TransitionManager {
         this.isTransitioning = false;
     }
 
+    async startReverseTransition(onComplete) {
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
+
+        this.portalMesh.position.set(0, 3, 8);
+        this.portalMesh.lookAt(this.camera.position);
+
+        this.scene.add(this.portalMesh);
+        this.portalMesh.visible = true;
+
+        await this.animatePortalOpen();
+
+        await this.animateZoomIn(new THREE.Vector3(0, 3, 8));
+
+        await this.animateScreenFlash();
+
+        if (onComplete) onComplete();
+
+        await this.animateFadeIn();
+
+        await this.animatePortalClose();
+
+        this.portalMesh.visible = false;
+        this.scene.remove(this.portalMesh);
+        this.isTransitioning = false;
+    }
+
     animatePortalOpen() {
         return new Promise((resolve) => {
             const duration = 1000;

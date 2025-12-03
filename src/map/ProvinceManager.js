@@ -4,6 +4,7 @@ export class ProvinceManager {
     constructor(scene) {
         this.scene = scene;
         this.provinces = [];
+        this.borders = [];
         this.hoveredProvince = null;
         this.selectedProvince = null;
     }
@@ -26,11 +27,17 @@ export class ProvinceManager {
         );
         line.position.copy(mesh.position);
         line.rotation.copy(mesh.rotation);
+
+        this.borders.push(line);
         this.scene.add(line);
     }
 
     getProvinces() {
         return this.provinces;
+    }
+
+    getBorders() {
+        return this.borders;
     }
 
     setHovered(province) {
@@ -62,6 +69,10 @@ export class ProvinceManager {
         this.provinces.forEach(province => {
             this.scene.remove(province);
         });
+        this.borders.forEach(border => {
+            this.scene.remove(border);
+        });
         this.provinces = [];
+        this.borders = [];
     }
 }

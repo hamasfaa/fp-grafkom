@@ -20,6 +20,15 @@ export class InfoPanel {
         `;
     }
 
+    showProvinceMode(provinceName) {
+        this.nameElement.textContent = `Exploring: ${provinceName}`;
+        this.detailElement.innerHTML = `
+            <p class="mb-2">🎨 You are now inside ${provinceName}</p>
+            <p class="text-sm text-gray-400">Use mouse to look around</p>
+            <p class="text-sm text-gray-400 mt-2">Click "Back to Map" to return</p>
+        `;
+    }
+
     updateStatistics(totalProvinces, totalMeshes, selectedProvince, cameraDistance) {
         document.getElementById('total-provinces').textContent = totalProvinces;
         document.getElementById('total-meshes').textContent = totalMeshes;

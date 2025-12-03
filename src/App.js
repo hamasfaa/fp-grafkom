@@ -48,6 +48,8 @@ export class App {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
 
+        this.isInProvinceMode = false;
+
         this.init();
     }
 
@@ -83,17 +85,21 @@ export class App {
 
     setupEventListeners() {
         window.addEventListener('mousemove', (event) => this.onMouseMove(event));
-        window.addEventListener('click', () => this.onClick());
+        window.addEventListener('click', (event) => this.onClick(event));
         window.addEventListener('resize', () => this.onResize());
     }
 
     onMouseMove(event) {
+        if (this.isInProvinceMode) return;
+
         this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
         this.handleHover();
     }
 
     handleHover() {
+        if (this.isInProvinceMode) return;
+
         this.raycaster.setFromCamera(this.mouse, this.cameraManager.getCamera());
         const intersects = this.raycaster.intersectObjects(this.provinceManager.getProvinces());
 
@@ -112,7 +118,14 @@ export class App {
         }
     }
 
-    async onClick() {
+    async onClick(event) {
+        const backButton = document.getElementById('back-to-map');
+        if (backButton && backButton.contains(event.target)) {
+            return;
+        }
+
+        if (this.isInProvinceMode) return;
+
         const hoveredProvince = this.provinceManager.getHovered();
 
         if (hoveredProvince && !this.transitionManager.isTransitioning) {
@@ -128,7 +141,6 @@ export class App {
             );
 
             this.controls.enabled = true;
-
             this.modal.show(hoveredProvince.userData.name);
         }
     }
@@ -136,8 +148,18 @@ export class App {
     loadProvinceScene(province) {
         console.log(`Loading scene for: ${province.userData.name}`);
 
+        this.isInProvinceMode = true;
+
         this.provinceManager.getProvinces().forEach(p => {
-            p.visible = false;
+            this.sceneManager.getScene().remove(p);
+        });
+
+        this.provinceManager.getBorders().forEach(border => {
+            this.sceneManager.getScene().remove(border);
+        });
+
+        this.labelManager.labels.forEach(label => {
+            this.sceneManager.getScene().remove(label);
         });
 
         const colors = [0x0f172a, 0x1e1b4b, 0x1e3a8a, 0x581c87];
@@ -148,30 +170,138 @@ export class App {
 
         this.cameraManager.getCamera().position.set(0, 8, 12);
         this.controls.target.set(0, 3, 0);
+
+        const statsPanel = document.querySelector('.absolute.bottom-6.left-6');
+        const controlsPanel = document.querySelector('.absolute.bottom-6.right-6');
+        if (statsPanel) statsPanel.style.display = 'none';
+        if (controlsPanel) controlsPanel.style.display = 'none';
+
+        this.showBackButton();
+
+        this.infoPanel.showProvinceMode(province.userData.name);
+
+        console.log('Province scene loaded, back button should be visible');
     }
 
-    zoomToProvince(province) {
-        const targetPosition = province.position.clone();
-        targetPosition.y = 0;
+    showBackButton() {
+        let backButton = document.getElementById('back-to-map');
 
-        const offset = new THREE.Vector3(0, 3, 4);
-        const endPosition = targetPosition.clone().add(offset);
+        if (!backButton) {
+            backButton = document.createElement('button');
+            backButton.id = 'back-to-map';
+            backButton.style.cssText = `
+            position: fixed;
+            top: 6rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(to right, #2563eb, #9333ea);
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        `;
 
-        animateCameraToPosition(
-            this.cameraManager.getCamera(),
-            this.controls,
-            endPosition,
-            targetPosition
-        );
+            backButton.innerHTML = `
+            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span>Back to Map</span>
+        `;
+
+            backButton.onmouseenter = () => {
+                backButton.style.background = 'linear-gradient(to right, #1d4ed8, #7e22ce)';
+                backButton.style.transform = 'scale(1.05)';
+            };
+            backButton.onmouseleave = () => {
+                backButton.style.background = 'linear-gradient(to right, #2563eb, #9333ea)';
+                backButton.style.transform = 'scale(1)';
+            };
+
+            document.body.appendChild(backButton);
+
+            backButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                console.log('Back button clicked!');
+                this.backToMap();
+            });
+
+            console.log('Back button created and added to body');
+        } else {
+            backButton.style.display = 'flex';
+            console.log('Back button already exists, showing it');
+        }
+
+        setTimeout(() => {
+            const btn = document.getElementById('back-to-map');
+            if (btn) {
+                console.log('Button found in DOM:', btn);
+                console.log('Button visibility:', window.getComputedStyle(btn).display);
+            } else {
+                console.error('Button NOT found in DOM!');
+            }
+        }, 100);
     }
 
-    resetView() {
+    hideBackButton() {
+        const backButton = document.getElementById('back-to-map');
+        if (backButton) {
+            backButton.style.display = 'none';
+            console.log('Back button hidden');
+        }
+    }
+
+    async backToMap() {
+        console.log('Back to map clicked');
+
+        this.controls.enabled = false;
+
+        await this.transitionManager.startReverseTransition(() => {
+            this.exitProvinceScene();
+        });
+
+        this.controls.enabled = true;
+    }
+
+    exitProvinceScene() {
+        console.log('Exiting province scene...');
+
+        this.isInProvinceMode = false;
+
         this.transitionManager.clearProvinceWorld();
 
         this.provinceManager.getProvinces().forEach(p => {
-            p.visible = true;
+            this.sceneManager.getScene().add(p);
         });
 
+        this.provinceManager.getBorders().forEach(border => {
+            this.sceneManager.getScene().add(border);
+        });
+
+        this.labelManager.labels.forEach(label => {
+            this.sceneManager.getScene().add(label);
+        });
+
+        this.sceneManager.getScene().background = null;
+
+        const statsPanel = document.querySelector('.absolute.bottom-6.left-6');
+        const controlsPanel = document.querySelector('.absolute.bottom-6.right-6');
+        if (statsPanel) statsPanel.style.display = 'block';
+        if (controlsPanel) controlsPanel.style.display = 'block';
+
+        this.hideBackButton();
+
+        this.resetView();
+    }
+
+    resetView() {
         const endPosition = new THREE.Vector3(
             CAMERA_CONFIG.position.x,
             CAMERA_CONFIG.position.y,
@@ -189,8 +319,6 @@ export class App {
 
         this.provinceManager.setSelected(null);
         this.infoPanel.showDefault();
-
-        this.sceneManager.getScene().background = null;
     }
 
     toggleLabels() {
@@ -218,22 +346,24 @@ export class App {
     animate() {
         requestAnimationFrame(() => this.animate());
 
-        const camera = this.cameraManager.getCamera();
-        const distance = camera.position.distanceTo(this.controls.target);
+        if (!this.isInProvinceMode) {
+            const camera = this.cameraManager.getCamera();
+            const distance = camera.position.distanceTo(this.controls.target);
 
-        this.infoPanel.updateStatistics(
-            this.mapLoader.provinceCount,
-            this.provinceManager.getProvinces().length,
-            this.provinceManager.getSelected()?.userData.name || null,
-            distance.toFixed(1)
-        );
+            this.infoPanel.updateStatistics(
+                this.mapLoader.provinceCount,
+                this.provinceManager.getProvinces().length,
+                this.provinceManager.getSelected()?.userData.name || null,
+                distance.toFixed(1)
+            );
+        }
 
         this.transitionManager.animateProvinceWorld();
 
         this.controls.update();
         this.rendererManager.render(
             this.sceneManager.getScene(),
-            camera
+            this.cameraManager.getCamera()
         );
     }
 }
