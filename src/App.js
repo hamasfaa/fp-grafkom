@@ -153,11 +153,6 @@ export class App {
 
         this.isInProvinceMode = true;
 
-        const provinceIndex = province.userData.provinceIndex;
-        if (provinceIndex !== undefined) {
-            this.audioManager.playProvinceMusic(provinceIndex);
-        }
-
         this.provinceManager.getProvinces().forEach(p => {
             this.sceneManager.getScene().remove(p);
         });
@@ -174,9 +169,14 @@ export class App {
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         this.sceneManager.getScene().background = new THREE.Color(randomColor);
 
-        this.transitionManager.createProvinceWorld(province.userData.name);
+        const provinceIndex = province.userData.provinceIndex;
+        this.transitionManager.createProvinceWorld(province.userData.name, provinceIndex);
 
-        this.cameraManager.getCamera().position.set(0, 8, 12);
+        if (provinceIndex !== undefined) {
+            this.audioManager.playProvinceMusic(provinceIndex);
+        }
+
+        this.cameraManager.getCamera().position.set(0, 8, 15);
         this.controls.target.set(0, 3, 0);
 
         const statsPanel = document.querySelector('.absolute.bottom-6.left-6');
@@ -187,8 +187,6 @@ export class App {
         this.showBackButton();
 
         this.infoPanel.showProvinceMode(province.userData.name);
-
-        console.log('Province scene loaded, back button should be visible');
     }
 
     showBackButton() {

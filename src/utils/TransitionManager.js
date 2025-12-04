@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { ModelManager } from './ModelManager';
 
 export class TransitionManager {
     constructor(scene, camera, renderer) {
@@ -6,6 +7,8 @@ export class TransitionManager {
         this.camera = camera;
         this.renderer = renderer;
         this.isTransitioning = false;
+        this.provinceWorld = null;
+        this.modelManager = new ModelManager();
 
         this.createPortalEffect();
     }
@@ -57,18 +60,102 @@ export class TransitionManager {
         this.portalMesh.visible = false;
     }
 
-    createProvinceWorld(provinceName) {
+    async createProvinceWorld(provinceName, provinceIndex) {
         if (this.provinceWorld) {
             this.clearProvinceWorld();
         }
 
         this.provinceWorld = new THREE.Group();
+        this.showLoadingIndicator();
 
-        const cubeCount = 20;
+        try {
+            const models = await this.modelManager.loadProvinceModels(provinceIndex, 15);
+
+            models.forEach((model, i) => {
+                let scale;
+                if (model.userData.customScale) {
+                    scale = model.userData.customScale;
+                    console.log(`Applying custom scale ${scale} to model`);
+                } else {
+                    scale = Math.random() * 0.8 + 0.5;
+                }
+
+                model.scale.setScalar(scale);
+
+                const radius = 8;
+                const angle = (i / models.length) * Math.PI * 2;
+                const randomOffset = (Math.random() - 0.5) * 3;
+
+                model.position.x = Math.cos(angle) * radius + randomOffset;
+                model.position.y = Math.random() * 4 + 1;
+                model.position.z = Math.sin(angle) * radius + randomOffset;
+
+                model.rotation.x = Math.random() * Math.PI;
+                model.rotation.y = Math.random() * Math.PI;
+                model.rotation.z = Math.random() * Math.PI;
+
+                model.userData.rotationSpeed = {
+                    x: (Math.random() - 0.5) * 0.01,
+                    y: (Math.random() - 0.5) * 0.02,
+                    z: (Math.random() - 0.5) * 0.01,
+                };
+                model.userData.floatSpeed = Math.random() * 0.015 + 0.008;
+                model.userData.floatOffset = Math.random() * Math.PI * 2;
+                model.userData.initialY = model.position.y;
+                model.userData.floatAmplitude = Math.random() * 0.5 + 0.3;
+
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (child.material) {
+                            child.material.needsUpdate = true;
+                            if (child.material.emissive) {
+                                child.material.emissive.setHex(0x111111);
+                            }
+                        }
+                    }
+                });
+
+                this.provinceWorld.add(model);
+            });
+
+            console.log(`Loaded ${models.length} models for ${provinceName}`);
+
+        } catch (error) {
+            console.error('Error loading province models:', error);
+            this.createFallbackCubes();
+        }
+
+        const platformGeometry = new THREE.CylinderGeometry(12, 12, 0.5, 64);
+        const platformMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1e293b,
+            roughness: 0.7,
+            metalness: 0.3,
+        });
+        const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+        platform.position.y = -0.5;
+        platform.receiveShadow = true;
+        this.provinceWorld.add(platform);
+
+        this.createProvinceText(provinceName);
+
+        this.createParticles();
+
+        this.addModelLighting();
+
+        this.scene.add(this.provinceWorld);
+
+        this.hideLoadingIndicator();
+    }
+
+    createFallbackCubes() {
+        const cubeCount = 15;
         const colors = [0x3b82f6, 0x9333ea, 0xec4899, 0xf59e0b, 0x10b981, 0xef4444];
 
         for (let i = 0; i < cubeCount; i++) {
-            const size = Math.random() * 2 + 0.5;
+            const size = Math.random() * 1.5 + 0.5;
             const geometry = new THREE.BoxGeometry(size, size, size);
             const color = colors[Math.floor(Math.random() * colors.length)];
             const material = new THREE.MeshStandardMaterial({
@@ -96,25 +183,163 @@ export class TransitionManager {
             };
             cube.userData.floatSpeed = Math.random() * 0.02 + 0.01;
             cube.userData.floatOffset = Math.random() * Math.PI * 2;
+            cube.userData.initialY = cube.position.y;
+            cube.userData.floatAmplitude = 0.5;
 
             this.provinceWorld.add(cube);
         }
+    }
 
-        const platformGeometry = new THREE.CylinderGeometry(10, 10, 0.5, 32);
-        const platformMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1e293b,
-            roughness: 0.8,
-            metalness: 0.2,
+    addModelLighting() {
+        const colors = [0x3b82f6, 0x9333ea, 0xec4899, 0xf59e0b];
+
+        for (let i = 0; i < 4; i++) {
+            const light = new THREE.PointLight(colors[i], 0.5, 20);
+            const angle = (i / 4) * Math.PI * 2;
+            light.position.x = Math.cos(angle) * 10;
+            light.position.y = 3;
+            light.position.z = Math.sin(angle) * 10;
+            this.provinceWorld.add(light);
+        }
+    }
+
+    showLoadingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.id = 'model-loading';
+        indicator.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 1rem;
+            color: white;
+            text-align: center;
+        `;
+        indicator.innerHTML = `
+            <div style="font-size: 2rem; margin-bottom: 1rem;">📦</div>
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">Loading Models...</div>
+            <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">Please wait</div>
+        `;
+        document.body.appendChild(indicator);
+    }
+
+    hideLoadingIndicator() {
+        const indicator = document.getElementById('model-loading');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+
+    createProvinceText(text) {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 1024;
+        canvas.height = 256;
+
+        context.fillStyle = 'rgba(59, 130, 246, 0.8)';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.font = 'Bold 80px Arial';
+        context.fillStyle = 'white';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(text, 512, 128);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            side: THREE.DoubleSide,
         });
-        const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-        platform.position.y = -0.5;
-        this.provinceWorld.add(platform);
 
-        this.createProvinceText(provinceName);
+        const geometry = new THREE.PlaneGeometry(10, 2.5);
+        const textMesh = new THREE.Mesh(geometry, material);
+        textMesh.position.y = 6;
+        textMesh.userData.isText = true;
 
-        this.createParticles();
+        this.provinceWorld.add(textMesh);
+    }
 
-        this.scene.add(this.provinceWorld);
+    createParticles() {
+        const particleCount = 150;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            positions[i3] = (Math.random() - 0.5) * 25;
+            positions[i3 + 1] = Math.random() * 12;
+            positions[i3 + 2] = (Math.random() - 0.5) * 25;
+
+            const color = new THREE.Color();
+            color.setHSL(Math.random(), 1.0, 0.7);
+            colors[i3] = color.r;
+            colors[i3 + 1] = color.g;
+            colors[i3 + 2] = color.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        particles.userData.isParticles = true;
+        this.provinceWorld.add(particles);
+    }
+
+    animateProvinceWorld() {
+        if (!this.provinceWorld) return;
+
+        const time = Date.now() * 0.001;
+
+        this.provinceWorld.children.forEach((child) => {
+            if (child.userData.rotationSpeed) {
+                child.rotation.x += child.userData.rotationSpeed.x;
+                child.rotation.y += child.userData.rotationSpeed.y;
+                child.rotation.z += child.userData.rotationSpeed.z;
+
+                if (child.userData.initialY !== undefined) {
+                    child.position.y = child.userData.initialY +
+                        Math.sin(time * child.userData.floatSpeed + child.userData.floatOffset) *
+                        child.userData.floatAmplitude;
+                }
+            }
+
+            if (child.userData.isText) {
+                child.lookAt(this.camera.position);
+                child.position.y = 6 + Math.sin(time * 0.5) * 0.3;
+            }
+
+            if (child.userData.isParticles) {
+                child.rotation.y = time * 0.05;
+            }
+        });
+    }
+
+    clearProvinceWorld() {
+        if (this.provinceWorld) {
+            this.provinceWorld.children.forEach((child) => {
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach(mat => mat.dispose());
+                    } else {
+                        child.material.dispose();
+                    }
+                }
+            });
+            this.scene.remove(this.provinceWorld);
+            this.provinceWorld = null;
+        }
     }
 
     createProvinceText(text) {
