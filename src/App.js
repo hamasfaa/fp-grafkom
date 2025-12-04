@@ -13,6 +13,7 @@ import { ControlsUI } from './ui/Controls.js';
 import { animateCameraToPosition } from './utils/animations.js';
 import { TransitionManager } from './utils/TransitionManager.js';
 import { CAMERA_CONFIG } from './config/constants.js';
+import { AudioManager } from './utils/AudioManager.js';
 
 export class App {
     constructor() {
@@ -25,6 +26,8 @@ export class App {
         this.provinceManager = new ProvinceManager(this.sceneManager.getScene());
         this.labelManager = new LabelManager(this.sceneManager.getScene());
         this.mapLoader = new MapLoader(this.provinceManager, this.labelManager);
+        this.audioManager = new AudioManager();
+
 
         this.transitionManager = new TransitionManager(
             this.sceneManager.getScene(),
@@ -150,6 +153,11 @@ export class App {
 
         this.isInProvinceMode = true;
 
+        const provinceIndex = province.userData.provinceIndex;
+        if (provinceIndex !== undefined) {
+            this.audioManager.playProvinceMusic(provinceIndex);
+        }
+
         this.provinceManager.getProvinces().forEach(p => {
             this.sceneManager.getScene().remove(p);
         });
@@ -272,6 +280,8 @@ export class App {
 
     exitProvinceScene() {
         console.log('Exiting province scene...');
+
+        this.audioManager.stop();
 
         this.isInProvinceMode = false;
 
