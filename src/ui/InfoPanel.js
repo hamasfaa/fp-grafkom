@@ -7,15 +7,15 @@ export class InfoPanel {
     showDefault() {
         this.nameElement.textContent = 'Indonesia Map';
         this.detailElement.innerHTML = `
-            <p class="mb-2">👆 Hover over provinces to highlight</p>
-            <p>🖱️ Click on a province to view details</p>
+            <p class="mb-2">Hover over provinces to highlight</p>
+            <p>Click on a province to view details</p>
         `;
     }
 
     showProvince(provinceName) {
         this.nameElement.textContent = provinceName;
         this.detailElement.innerHTML = `
-            <p class="text-gray-300">🏛️ <strong>Province:</strong> ${provinceName}</p>
+            <p class="text-gray-300"><strong>Province:</strong> ${provinceName}</p>
             <p class="text-gray-400 text-xs mt-2">Click to view detailed information</p>
         `;
     }
@@ -23,7 +23,7 @@ export class InfoPanel {
     showProvinceMode(provinceName) {
         this.nameElement.textContent = `Exploring: ${provinceName}`;
         this.detailElement.innerHTML = `
-            <p class="mb-2">🎨 You are now inside ${provinceName}</p>
+            <p class="mb-2">You are now inside ${provinceName}</p>
             <p class="text-sm text-gray-400">Use mouse to look around</p>
             <p class="text-sm text-gray-400 mt-2">Click "Back to Map" to return</p>
         `;

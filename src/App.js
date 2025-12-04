@@ -63,7 +63,7 @@ export class App {
 
     async init() {
         try {
-            const totalProvinces = await this.mapLoader.loadGeoJson('./indonesia-prov.geojson');
+            const totalProvinces = await this.mapLoader.loadGeoJson('./indonesia-new.json');
             const totalMeshes = this.provinceManager.getProvinces().length;
 
             console.log(`Loaded ${totalProvinces} provinces with ${totalMeshes} total meshes`);
