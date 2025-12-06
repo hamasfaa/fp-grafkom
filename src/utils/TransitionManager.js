@@ -69,25 +69,18 @@ export class TransitionManager {
         this.showLoadingIndicator();
 
         try {
-            const models = await this.modelManager.loadProvinceModels(provinceIndex, 15);
+            const floatingModels = await this.modelManager.loadFloatingModels(provinceIndex, 12);
 
-            models.forEach((model, i) => {
-                let scale;
-                if (model.userData.customScale) {
-                    scale = model.userData.customScale;
-                    console.log(`Applying custom scale ${scale} to model`);
-                } else {
-                    scale = Math.random() * 0.8 + 0.5;
-                }
-
+            floatingModels.forEach((model, i) => {
+                let scale = model.userData.customScale || (Math.random() * 0.8 + 0.5);
                 model.scale.setScalar(scale);
 
                 const radius = 8;
-                const angle = (i / models.length) * Math.PI * 2;
+                const angle = (i / floatingModels.length) * Math.PI * 2;
                 const randomOffset = (Math.random() - 0.5) * 3;
 
                 model.position.x = Math.cos(angle) * radius + randomOffset;
-                model.position.y = Math.random() * 4 + 1;
+                model.position.y = Math.random() * 4 + 2;
                 model.position.z = Math.sin(angle) * radius + randomOffset;
 
                 model.rotation.x = Math.random() * Math.PI;
@@ -121,7 +114,51 @@ export class TransitionManager {
                 this.provinceWorld.add(model);
             });
 
-            console.log(`Loaded ${models.length} models for ${provinceName}`);
+            const platformModels = await this.modelManager.loadPlatformModels(provinceIndex);
+
+            platformModels.forEach((model) => {
+                let scale = model.userData.customScale || 0.5;
+                model.scale.setScalar(scale);
+
+                if (model.userData.customPosition) {
+                    model.position.set(
+                        model.userData.customPosition.x,
+                        model.userData.customPosition.y,
+                        model.userData.customPosition.z
+                    );
+                } else {
+                    model.position.set(0, 0.2, 0);
+                }
+
+                if (model.userData.customRotation) {
+                    model.rotation.set(
+                        model.userData.customRotation.x,
+                        model.userData.customRotation.y,
+                        model.userData.customRotation.z
+                    );
+                }
+
+                model.userData.rotationSpeed = {
+                    x: 0,
+                    y: 0.005,
+                    z: 0,
+                };
+
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (child.material) {
+                            child.material.needsUpdate = true;
+                        }
+                    }
+                });
+
+                this.provinceWorld.add(model);
+            });
+
+            console.log(`Loaded ${floatingModels.length} floating + ${platformModels.length} platform models for ${provinceName}`);
 
         } catch (error) {
             console.error('Error loading province models:', error);
@@ -130,14 +167,24 @@ export class TransitionManager {
 
         const platformGeometry = new THREE.CylinderGeometry(12, 12, 0.5, 64);
         const platformMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1e293b,
+            color: 0x1a1a1a,
             roughness: 0.7,
-            metalness: 0.3,
+            metalness: 0.4,
         });
         const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-        platform.position.y = -0.5;
+        platform.position.y = -0.3;
         platform.receiveShadow = true;
         this.provinceWorld.add(platform);
+
+        const ringGeometry = new THREE.RingGeometry(11.5, 12, 64);
+        const ringMaterial = new THREE.MeshBasicMaterial({
+            color: 0x3b82f6,
+            side: THREE.DoubleSide,
+        });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.y = -0.05;
+        this.provinceWorld.add(ring);
 
         this.createProvinceText(provinceName);
 
@@ -146,7 +193,6 @@ export class TransitionManager {
         this.addModelLighting();
 
         this.scene.add(this.provinceWorld);
-
         this.hideLoadingIndicator();
     }
 
@@ -296,35 +342,6 @@ export class TransitionManager {
         this.provinceWorld.add(particles);
     }
 
-    animateProvinceWorld() {
-        if (!this.provinceWorld) return;
-
-        const time = Date.now() * 0.001;
-
-        this.provinceWorld.children.forEach((child) => {
-            if (child.userData.rotationSpeed) {
-                child.rotation.x += child.userData.rotationSpeed.x;
-                child.rotation.y += child.userData.rotationSpeed.y;
-                child.rotation.z += child.userData.rotationSpeed.z;
-
-                if (child.userData.initialY !== undefined) {
-                    child.position.y = child.userData.initialY +
-                        Math.sin(time * child.userData.floatSpeed + child.userData.floatOffset) *
-                        child.userData.floatAmplitude;
-                }
-            }
-
-            if (child.userData.isText) {
-                child.lookAt(this.camera.position);
-                child.position.y = 6 + Math.sin(time * 0.5) * 0.3;
-            }
-
-            if (child.userData.isParticles) {
-                child.rotation.y = time * 0.05;
-            }
-        });
-    }
-
     clearProvinceWorld() {
         if (this.provinceWorld) {
             this.provinceWorld.children.forEach((child) => {
@@ -411,21 +428,29 @@ export class TransitionManager {
         const time = Date.now() * 0.001;
 
         this.provinceWorld.children.forEach((child) => {
-            if (child.geometry instanceof THREE.BoxGeometry) {
+            if (child.userData.isFloating && child.userData.rotationSpeed) {
                 child.rotation.x += child.userData.rotationSpeed.x;
                 child.rotation.y += child.userData.rotationSpeed.y;
                 child.rotation.z += child.userData.rotationSpeed.z;
 
-                child.position.y += Math.sin(time + child.userData.floatOffset) * child.userData.floatSpeed;
+                if (child.userData.initialY !== undefined) {
+                    child.position.y = child.userData.initialY +
+                        Math.sin(time * child.userData.floatSpeed + child.userData.floatOffset) *
+                        child.userData.floatAmplitude;
+                }
+            }
+
+            if (child.userData.isPlatform && child.userData.rotationSpeed) {
+                child.rotation.y += child.userData.rotationSpeed.y;
             }
 
             if (child.userData.isText) {
                 child.lookAt(this.camera.position);
-                child.position.y = 5 + Math.sin(time) * 0.5;
+                child.position.y = 6 + Math.sin(time * 0.5) * 0.3;
             }
 
             if (child.userData.isParticles) {
-                child.rotation.y = time * 0.1;
+                child.rotation.y = time * 0.05;
             }
         });
     }

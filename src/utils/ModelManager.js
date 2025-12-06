@@ -6,21 +6,41 @@ export class ModelManager {
         this.loader = new GLTFLoader();
         this.loadedModels = new Map();
 
-        this.provinceModels = {
-            // Jatim - 20
+        this.floatingModels = {
+            // Jawa Timur - 19
             19: [
                 {
-                    path: './assets/models/jatim/suramadu.glb',
-                    scale: 0.1
-                },
-                {
-                    path: './assets/models/jatim/suroboyo.glb',
-                    scale: 0.1
-                },
-                {
                     path: './assets/models/jatim/soto.glb',
-                    scale: 0.5
+                    scale: 0.5,
+                    name: 'Soto Lamongan'
                 },
+            ],
+        };
+
+        this.platformModels = {
+            // Jawa Timur - 19
+            19: [
+                {
+                    path: './assets/models/jatim/tugu.glb',
+                    scale: 5,
+                    position: { x: 0, y: 0.2, z: 0 }, // Center
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Tugu Pahlawan'
+                },
+                {
+                    path: './assets/models/jatim/suramadu.glb',
+                    scale: 0.2,
+                    position: { x: 5, y: 0.2, z: 0 },
+                    // rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Jembatan Suramadu'
+                },
+                // {
+                //     path: './assets/models/jatim/suroboyo.glb',
+                //     scale: 0.5,
+                //     position: { x: 0, y: 4, z: 0 },
+                //     rotation: { x: 0, y: 0, z: 0 },
+                //     name: 'Tugu Suroboyo'
+                // },
             ],
         };
 
@@ -34,12 +54,16 @@ export class ModelManager {
     async loadModel(pathOrConfig) {
         const path = typeof pathOrConfig === 'string' ? pathOrConfig : pathOrConfig.path;
         const customScale = typeof pathOrConfig === 'object' ? pathOrConfig.scale : null;
+        const position = typeof pathOrConfig === 'object' ? pathOrConfig.position : null;
+        const rotation = typeof pathOrConfig === 'object' ? pathOrConfig.rotation : null;
+        const name = typeof pathOrConfig === 'object' ? pathOrConfig.name : null;
 
         if (this.loadedModels.has(path)) {
             const cloned = this.loadedModels.get(path).clone();
-            if (customScale) {
-                cloned.userData.customScale = customScale;
-            }
+            if (customScale) cloned.userData.customScale = customScale;
+            if (position) cloned.userData.customPosition = position;
+            if (rotation) cloned.userData.customRotation = rotation;
+            if (name) cloned.userData.modelName = name;
             return cloned;
         }
 
@@ -49,9 +73,10 @@ export class ModelManager {
                 (gltf) => {
                     this.loadedModels.set(path, gltf.scene);
                     const cloned = gltf.scene.clone();
-                    if (customScale) {
-                        cloned.userData.customScale = customScale;
-                    }
+                    if (customScale) cloned.userData.customScale = customScale;
+                    if (position) cloned.userData.customPosition = position;
+                    if (rotation) cloned.userData.customRotation = rotation;
+                    if (name) cloned.userData.modelName = name;
                     resolve(cloned);
                 },
                 (progress) => {
@@ -66,12 +91,11 @@ export class ModelManager {
         });
     }
 
-    async loadProvinceModels(provinceIndex, count = 15) {
+    async loadFloatingModels(provinceIndex, count = 12) {
         const models = [];
+        const modelConfigs = this.floatingModels[provinceIndex] || this.fallbackModels;
 
-        const modelConfigs = this.provinceModels[provinceIndex] || this.fallbackModels;
-
-        console.log(`Loading ${count} models for province ${provinceIndex}`);
+        console.log(`Loading ${count} floating models for province ${provinceIndex}`);
 
         for (let i = 0; i < count; i++) {
             try {
@@ -79,15 +103,13 @@ export class ModelManager {
                 const model = await this.loadModel(randomConfig);
 
                 if (model) {
+                    model.userData.isFloating = true;
                     models.push(model);
                 }
             } catch (error) {
-                console.warn(`Failed to load model, using fallback:`, error);
-                const geometry = new THREE.BoxGeometry(1, 1, 1);
-                const material = new THREE.MeshStandardMaterial({
-                    color: Math.random() * 0xffffff,
-                });
-                const cube = new THREE.Mesh(geometry, material);
+                console.warn(`Failed to load floating model, using fallback:`, error);
+                const cube = this.createFallbackCube();
+                cube.userData.isFloating = true;
                 models.push(cube);
             }
         }
@@ -95,12 +117,61 @@ export class ModelManager {
         return models;
     }
 
-    getAvailableProvinces() {
-        return Object.keys(this.provinceModels).map(Number);
+    async loadPlatformModels(provinceIndex) {
+        const models = [];
+        const modelConfigs = this.platformModels[provinceIndex];
+
+        if (!modelConfigs || modelConfigs.length === 0) {
+            console.log(`No platform models defined for province ${provinceIndex}`);
+            return models;
+        }
+
+        console.log(`Loading ${modelConfigs.length} platform models for province ${provinceIndex}`);
+
+        for (const config of modelConfigs) {
+            try {
+                const model = await this.loadModel(config);
+
+                if (model) {
+                    model.userData.isPlatform = true;
+                    models.push(model);
+                }
+            } catch (error) {
+                console.warn(`Failed to load platform model ${config.name}:`, error);
+                const cube = this.createFallbackCube();
+                cube.userData.isPlatform = true;
+                if (config.position) cube.userData.customPosition = config.position;
+                if (config.scale) cube.userData.customScale = config.scale;
+                if (config.rotation) cube.userData.customRotation = config.rotation;
+                models.push(cube);
+            }
+        }
+
+        return models;
     }
 
-    hasModels(provinceIndex) {
-        return this.provinceModels.hasOwnProperty(provinceIndex);
+    createFallbackCube() {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshStandardMaterial({
+            color: Math.random() * 0xffffff,
+            roughness: 0.5,
+            metalness: 0.3,
+        });
+        return new THREE.Mesh(geometry, material);
+    }
+
+    getAvailableProvinces() {
+        const floatingProvinces = Object.keys(this.floatingModels).map(Number);
+        const platformProvinces = Object.keys(this.platformModels).map(Number);
+        return [...new Set([...floatingProvinces, ...platformProvinces])];
+    }
+
+    hasFloatingModels(provinceIndex) {
+        return this.floatingModels.hasOwnProperty(provinceIndex);
+    }
+
+    hasPlatformModels(provinceIndex) {
+        return this.platformModels.hasOwnProperty(provinceIndex);
     }
 
     clearCache() {
