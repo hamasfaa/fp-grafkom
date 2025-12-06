@@ -14,6 +14,7 @@ import { animateCameraToPosition } from './utils/animations.js';
 import { TransitionManager } from './utils/TransitionManager.js';
 import { CAMERA_CONFIG } from './config/constants.js';
 import { AudioManager } from './utils/AudioManager.js';
+import { FirstPersonControls } from './core/FirstPersonControls.js';
 
 export class App {
     constructor() {
@@ -47,11 +48,18 @@ export class App {
             this.rendererManager.getRenderer().domElement
         );
         this.setupControls();
+        
+        // First person controls (will be activated in province mode)
+        this.firstPersonControls = new FirstPersonControls(
+            this.cameraManager.getCamera(),
+            this.rendererManager.getRenderer().domElement
+        );
 
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
 
         this.isInProvinceMode = false;
+        this.clock = new THREE.Clock();
 
         this.init();
     }
@@ -171,13 +179,27 @@ export class App {
 
         const provinceIndex = province.userData.provinceIndex;
         this.transitionManager.createProvinceWorld(province.userData.name, provinceIndex);
+        
+        // Set platform models for collision detection after world is created
+        setTimeout(() => {
+            if (this.firstPersonControls) {
+                const models = this.transitionManager.getPlatformModels();
+                this.firstPersonControls.setModelObjects(models);
+                console.log('Set', models.length, 'models for collision detection');
+            }
+        }, 100);
 
         if (provinceIndex !== undefined) {
             this.audioManager.playProvinceMusic(provinceIndex);
         }
 
-        this.cameraManager.getCamera().position.set(0, 8, 15);
-        this.controls.target.set(0, 3, 0);
+        // Switch to first person controls
+        this.controls.enabled = false;
+        this.controls.enableRotate = false;
+        this.controls.enableZoom = false;
+        this.controls.enablePan = false;
+        this.cameraManager.getCamera().position.set(0, 2, 10);
+        this.cameraManager.getCamera().lookAt(0, 2, 0);
 
         const statsPanel = document.querySelector('.absolute.bottom-6.left-6');
         const controlsPanel = document.querySelector('.absolute.bottom-6.right-6');
@@ -185,6 +207,7 @@ export class App {
         if (controlsPanel) controlsPanel.style.display = 'none';
 
         this.showBackButton();
+        this.showControlsHint();
 
         this.infoPanel.showProvinceMode(province.userData.name);
     }
@@ -255,6 +278,60 @@ export class App {
             }
         }, 100);
     }
+    
+    showControlsHint() {
+        let hint = document.getElementById('controls-hint');
+        
+        if (!hint) {
+            hint = document.createElement('div');
+            hint.id = 'controls-hint';
+            hint.style.cssText = `
+                position: fixed;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 0.75rem;
+                font-weight: 500;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                animation: fadeIn 0.5s ease-in-out;
+            `;
+            
+            hint.innerHTML = `
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">W A S D</kbd>
+                        <span>Move</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">↑ ↓ ← →</kbd>
+                        <span>Look</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Shift</kbd>
+                        <span>Run</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Space</kbd>
+                        <span>Jump</span>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(hint);
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hint.style.opacity = '0';
+                hint.style.transition = 'opacity 0.5s';
+                setTimeout(() => hint.remove(), 500);
+            }, 5000);
+        }
+    }
 
     hideBackButton() {
         const backButton = document.getElementById('back-to-map');
@@ -282,6 +359,12 @@ export class App {
         this.audioManager.stop();
 
         this.isInProvinceMode = false;
+        
+        // Re-enable orbit controls fully
+        this.controls.enabled = true;
+        this.controls.enableRotate = true;
+        this.controls.enableZoom = true;
+        this.controls.enablePan = true;
 
         this.transitionManager.clearProvinceWorld();
 
@@ -353,6 +436,8 @@ export class App {
 
     animate() {
         requestAnimationFrame(() => this.animate());
+        
+        const delta = this.clock.getDelta();
 
         if (!this.isInProvinceMode) {
             const camera = this.cameraManager.getCamera();
@@ -364,11 +449,15 @@ export class App {
                 this.provinceManager.getSelected()?.userData.name || null,
                 distance.toFixed(1)
             );
+            
+            this.controls.update();
+        } else {
+            // Update first person controls in province mode
+            this.firstPersonControls.update(delta);
         }
 
         this.transitionManager.animateProvinceWorld();
 
-        this.controls.update();
         this.rendererManager.render(
             this.sceneManager.getScene(),
             this.cameraManager.getCamera()

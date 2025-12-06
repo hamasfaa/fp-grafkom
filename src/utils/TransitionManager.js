@@ -8,6 +8,7 @@ export class TransitionManager {
         this.renderer = renderer;
         this.isTransitioning = false;
         this.provinceWorld = null;
+        this.platformModels = []; // Store platform models for collision
         this.modelManager = new ModelManager();
 
         this.createPortalEffect();
@@ -66,36 +67,49 @@ export class TransitionManager {
         }
 
         this.provinceWorld = new THREE.Group();
+        this.platformModels = []; // Reset platform models
         this.showLoadingIndicator();
 
         try {
+            // Load floating models (makanan, keris, reog dll yang melayang di sekitar)
             const floatingModels = await this.modelManager.loadFloatingModels(provinceIndex, 12);
 
             floatingModels.forEach((model, i) => {
-                let scale = model.userData.customScale || (Math.random() * 0.8 + 0.5);
+                // Gunakan scale dari config
+                let scale = model.userData.customScale || 0.8;
                 model.scale.setScalar(scale);
 
-                const radius = 8;
-                const angle = (i / floatingModels.length) * Math.PI * 2;
-                const randomOffset = (Math.random() - 0.5) * 3;
+                // Posisi melingkar di luar platform - 2 layer
+                const layer = Math.floor(i / 6);
+                const indexInLayer = i % 6;
+                const radius = 11 + layer * 4;
+                const angle = (indexInLayer / 6) * Math.PI * 2 + (layer * Math.PI / 6);
+                const heightVariation = (i % 3) * 1.5;
 
-                model.position.x = Math.cos(angle) * radius + randomOffset;
-                model.position.y = Math.random() * 4 + 2;
-                model.position.z = Math.sin(angle) * radius + randomOffset;
+                model.position.x = Math.cos(angle) * radius;
+                model.position.y = 3 + heightVariation;
+                model.position.z = Math.sin(angle) * radius;
 
-                model.rotation.x = Math.random() * Math.PI;
-                model.rotation.y = Math.random() * Math.PI;
-                model.rotation.z = Math.random() * Math.PI;
+                // Rotasi awal
+                model.rotation.x = 0;
+                model.rotation.y = angle + Math.PI;
+                model.rotation.z = 0;
 
+                model.userData.isFloating = true;
                 model.userData.rotationSpeed = {
-                    x: (Math.random() - 0.5) * 0.01,
-                    y: (Math.random() - 0.5) * 0.02,
-                    z: (Math.random() - 0.5) * 0.01,
+                    x: 0.003 + Math.random() * 0.002,
+                    y: 0.006 + Math.random() * 0.004,
+                    z: 0.002 + Math.random() * 0.003,
                 };
-                model.userData.floatSpeed = Math.random() * 0.015 + 0.008;
-                model.userData.floatOffset = Math.random() * Math.PI * 2;
+                model.userData.floatSpeed = 0.8 + Math.random() * 0.4;
+                model.userData.floatOffset = (i / floatingModels.length) * Math.PI * 2;
                 model.userData.initialY = model.position.y;
-                model.userData.floatAmplitude = Math.random() * 0.5 + 0.3;
+                model.userData.floatAmplitude = 0.5;
+                
+                // Orbit data for revolving around center (flat circle, no up/down)
+                model.userData.orbitRadius = radius;
+                model.userData.orbitAngle = angle;
+                model.userData.orbitHeight = model.position.y; // Keep constant height during orbit
 
                 model.traverse((child) => {
                     if (child.isMesh) {
@@ -114,11 +128,13 @@ export class TransitionManager {
                 this.provinceWorld.add(model);
             });
 
+            // Load platform models (model utama di atas platform)
             const platformModels = await this.modelManager.loadPlatformModels(provinceIndex);
 
-            platformModels.forEach((model) => {
-                let scale = model.userData.customScale || 0.5;
+            platformModels.forEach((model, index) => {
+                let scale = model.userData.customScale || 1.0;
                 model.scale.setScalar(scale);
+                model.userData.originalScale = scale; // Store for collision radius calculation
 
                 if (model.userData.customPosition) {
                     model.position.set(
@@ -138,9 +154,10 @@ export class TransitionManager {
                     );
                 }
 
+                // Semua model platform tidak berputar agar stabil
                 model.userData.rotationSpeed = {
                     x: 0,
-                    y: 0.005,
+                    y: 0,
                     z: 0,
                 };
 
@@ -156,34 +173,38 @@ export class TransitionManager {
                 });
 
                 this.provinceWorld.add(model);
+                this.platformModels.push(model); // Store for collision detection
             });
 
             console.log(`Loaded ${floatingModels.length} floating + ${platformModels.length} platform models for ${provinceName}`);
+            console.log(`Platform models for collision:`, this.platformModels.length);
 
         } catch (error) {
             console.error('Error loading province models:', error);
             this.createFallbackCubes();
         }
 
-        const platformGeometry = new THREE.CylinderGeometry(12, 12, 0.5, 64);
+        // Platform utama - lingkaran besar
+        const platformGeometry = new THREE.CylinderGeometry(12, 12.5, 0.4, 64);
         const platformMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1a1a1a,
-            roughness: 0.7,
-            metalness: 0.4,
+            color: 0x1e293b,
+            roughness: 0.8,
+            metalness: 0.3,
         });
         const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-        platform.position.y = -0.3;
+        platform.position.y = -0.2;
         platform.receiveShadow = true;
         this.provinceWorld.add(platform);
 
-        const ringGeometry = new THREE.RingGeometry(11.5, 12, 64);
+        // Ring dekoratif di tepi platform
+        const ringGeometry = new THREE.RingGeometry(11.8, 12.3, 64);
         const ringMaterial = new THREE.MeshBasicMaterial({
             color: 0x3b82f6,
             side: THREE.DoubleSide,
         });
         const ring = new THREE.Mesh(ringGeometry, ringMaterial);
         ring.rotation.x = -Math.PI / 2;
-        ring.position.y = -0.05;
+        ring.position.y = 0.01;
         this.provinceWorld.add(ring);
 
         this.createProvinceText(provinceName);
@@ -285,89 +306,25 @@ export class TransitionManager {
         canvas.width = 1024;
         canvas.height = 256;
 
-        context.fillStyle = 'rgba(59, 130, 246, 0.8)';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        context.font = 'Bold 80px Arial';
-        context.fillStyle = 'white';
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText(text, 512, 128);
+        // Background dengan gradient
+        const gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.9)');
+        gradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.9)');
+        gradient.addColorStop(1, 'rgba(147, 51, 234, 0.9)');
+        
+        // Rounded rectangle
+        const radius = 30;
+        context.beginPath();
+        context.roundRect(10, 10, canvas.width - 20, canvas.height - 20, radius);
+        context.fillStyle = gradient;
+        context.fill();
 
-        const texture = new THREE.CanvasTexture(canvas);
-        const material = new THREE.MeshBasicMaterial({
-            map: texture,
-            transparent: true,
-            side: THREE.DoubleSide,
-        });
-
-        const geometry = new THREE.PlaneGeometry(10, 2.5);
-        const textMesh = new THREE.Mesh(geometry, material);
-        textMesh.position.y = 6;
-        textMesh.userData.isText = true;
-
-        this.provinceWorld.add(textMesh);
-    }
-
-    createParticles() {
-        const particleCount = 150;
-        const geometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const colors = new Float32Array(particleCount * 3);
-
-        for (let i = 0; i < particleCount; i++) {
-            const i3 = i * 3;
-            positions[i3] = (Math.random() - 0.5) * 25;
-            positions[i3 + 1] = Math.random() * 12;
-            positions[i3 + 2] = (Math.random() - 0.5) * 25;
-
-            const color = new THREE.Color();
-            color.setHSL(Math.random(), 1.0, 0.7);
-            colors[i3] = color.r;
-            colors[i3 + 1] = color.g;
-            colors[i3 + 2] = color.b;
-        }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const material = new THREE.PointsMaterial({
-            size: 0.15,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-        });
-
-        const particles = new THREE.Points(geometry, material);
-        particles.userData.isParticles = true;
-        this.provinceWorld.add(particles);
-    }
-
-    clearProvinceWorld() {
-        if (this.provinceWorld) {
-            this.provinceWorld.children.forEach((child) => {
-                if (child.geometry) child.geometry.dispose();
-                if (child.material) {
-                    if (Array.isArray(child.material)) {
-                        child.material.forEach(mat => mat.dispose());
-                    } else {
-                        child.material.dispose();
-                    }
-                }
-            });
-            this.scene.remove(this.provinceWorld);
-            this.provinceWorld = null;
-        }
-    }
-
-    createProvinceText(text) {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = 1024;
-        canvas.height = 256;
-
-        context.fillStyle = 'rgba(59, 130, 246, 0.8)';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        context.font = 'Bold 80px Arial';
+        // Text dengan shadow
+        context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        context.shadowBlur = 10;
+        context.shadowOffsetX = 3;
+        context.shadowOffsetY = 3;
+        context.font = 'Bold 72px Arial';
         context.fillStyle = 'white';
         context.textAlign = 'center';
         context.textBaseline = 'middle';
@@ -382,7 +339,7 @@ export class TransitionManager {
 
         const geometry = new THREE.PlaneGeometry(8, 2);
         const textMesh = new THREE.Mesh(geometry, material);
-        textMesh.position.y = 5;
+        textMesh.position.y = 8;
         textMesh.userData.isText = true;
 
         this.provinceWorld.add(textMesh);
@@ -396,12 +353,17 @@ export class TransitionManager {
 
         for (let i = 0; i < particleCount; i++) {
             const i3 = i * 3;
-            positions[i3] = (Math.random() - 0.5) * 20;
-            positions[i3 + 1] = Math.random() * 10;
-            positions[i3 + 2] = (Math.random() - 0.5) * 20;
+            // Distribusi partikel dalam bentuk silinder di sekitar platform
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 6 + Math.random() * 10;
+            
+            positions[i3] = Math.cos(angle) * radius;
+            positions[i3 + 1] = Math.random() * 10 + 0.5;
+            positions[i3 + 2] = Math.sin(angle) * radius;
 
+            // Warna gradasi biru-ungu
             const color = new THREE.Color();
-            color.setHSL(Math.random(), 1.0, 0.7);
+            color.setHSL(0.6 + Math.random() * 0.2, 0.8, 0.6);
             colors[i3] = color.r;
             colors[i3 + 1] = color.g;
             colors[i3 + 2] = color.b;
@@ -411,48 +373,15 @@ export class TransitionManager {
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const material = new THREE.PointsMaterial({
-            size: 0.1,
+            size: 0.15,
             vertexColors: true,
             transparent: true,
-            opacity: 0.8,
+            opacity: 0.7,
         });
 
         const particles = new THREE.Points(geometry, material);
         particles.userData.isParticles = true;
         this.provinceWorld.add(particles);
-    }
-
-    animateProvinceWorld() {
-        if (!this.provinceWorld) return;
-
-        const time = Date.now() * 0.001;
-
-        this.provinceWorld.children.forEach((child) => {
-            if (child.userData.isFloating && child.userData.rotationSpeed) {
-                child.rotation.x += child.userData.rotationSpeed.x;
-                child.rotation.y += child.userData.rotationSpeed.y;
-                child.rotation.z += child.userData.rotationSpeed.z;
-
-                if (child.userData.initialY !== undefined) {
-                    child.position.y = child.userData.initialY +
-                        Math.sin(time * child.userData.floatSpeed + child.userData.floatOffset) *
-                        child.userData.floatAmplitude;
-                }
-            }
-
-            if (child.userData.isPlatform && child.userData.rotationSpeed) {
-                child.rotation.y += child.userData.rotationSpeed.y;
-            }
-
-            if (child.userData.isText) {
-                child.lookAt(this.camera.position);
-                child.position.y = 6 + Math.sin(time * 0.5) * 0.3;
-            }
-
-            if (child.userData.isParticles) {
-                child.rotation.y = time * 0.05;
-            }
-        });
     }
 
     clearProvinceWorld() {
@@ -469,7 +398,53 @@ export class TransitionManager {
             });
             this.scene.remove(this.provinceWorld);
             this.provinceWorld = null;
+            this.platformModels = []; // Clear platform models
         }
+    }
+    
+    getPlatformModels() {
+        return this.platformModels;
+    }
+
+    animateProvinceWorld() {
+        if (!this.provinceWorld) return;
+
+        const time = Date.now() * 0.001;
+
+        this.provinceWorld.children.forEach((child) => {
+            if (child.userData.isFloating && child.userData.rotationSpeed) {
+                // Self rotation on all axes (xyz)
+                child.rotation.x += child.userData.rotationSpeed.x;
+                child.rotation.y += child.userData.rotationSpeed.y;
+                child.rotation.z += child.userData.rotationSpeed.z;
+                
+                // Orbit around center (horizontal circle only, no vertical movement)
+                if (child.userData.orbitRadius !== undefined && child.userData.orbitAngle !== undefined) {
+                    const orbitSpeed = 0.15; // Rotation speed around center
+                    child.userData.orbitAngle += orbitSpeed * 0.016; // Approximate delta time
+                    
+                    // Update X and Z for circular orbit
+                    child.position.x = Math.cos(child.userData.orbitAngle) * child.userData.orbitRadius;
+                    child.position.z = Math.sin(child.userData.orbitAngle) * child.userData.orbitRadius;
+                    
+                    // Keep Y at orbit height (no up/down during revolution)
+                    child.position.y = child.userData.orbitHeight;
+                }
+            }
+
+            if (child.userData.isPlatform && child.userData.rotationSpeed) {
+                child.rotation.y += child.userData.rotationSpeed.y;
+            }
+
+            if (child.userData.isText) {
+                child.lookAt(this.camera.position);
+                child.position.y = 8 + Math.sin(time * 0.5) * 0.2;
+            }
+
+            if (child.userData.isParticles) {
+                child.rotation.y = time * 0.02;
+            }
+        });
     }
 
     async startTransition(targetProvince, onComplete) {

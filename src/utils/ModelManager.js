@@ -11,8 +11,18 @@ export class ModelManager {
             19: [
                 {
                     path: './assets/models/jatim/soto.glb',
-                    scale: 0.5,
+                    scale: 1.2,
                     name: 'Soto Lamongan'
+                },
+                {
+                    path: './assets/models/jatim/keris.glb',
+                    scale: 0.8,
+                    name: 'Keris Jawa Timur'
+                },
+                {
+                    path: './assets/models/jatim/reog_ponorogo.glb',
+                    scale: 2.5,
+                    name: 'Reog Ponorogo'
                 },
             ],
         };
@@ -21,26 +31,33 @@ export class ModelManager {
             // Jawa Timur - 19
             19: [
                 {
+                    path: './assets/models/jatim/suroboyo.glb',
+                    scale: 0.35,
+                    position: { x: 0, y: 0.1, z: 1.5 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Tugu Suroboyo'
+                },
+                {
                     path: './assets/models/jatim/tugu.glb',
-                    scale: 5,
-                    position: { x: 0, y: 0.2, z: 0 }, // Center
+                    scale: 7.0,
+                    position: { x: 0, y: 0.1, z: -6 },
                     rotation: { x: 0, y: 0, z: 0 },
                     name: 'Tugu Pahlawan'
                 },
                 {
                     path: './assets/models/jatim/suramadu.glb',
                     scale: 0.2,
-                    position: { x: 5, y: 0.2, z: 0 },
-                    // rotation: { x: 0, y: 0, z: 0 },
+                    position: { x: -6, y: 0.1, z: 2 },
+                    rotation: { x: 0, y: Math.PI / 2.5, z: 0 },
                     name: 'Jembatan Suramadu'
                 },
-                // {
-                //     path: './assets/models/jatim/suroboyo.glb',
-                //     scale: 0.5,
-                //     position: { x: 0, y: 4, z: 0 },
-                //     rotation: { x: 0, y: 0, z: 0 },
-                //     name: 'Tugu Suroboyo'
-                // },
+                {
+                    path: './assets/models/jatim/jawa_timur_park_1.glb',
+                    scale: 3.5,
+                    position: { x: 6, y: 0.4, z: 2 },
+                    rotation: { x: 0, y: -Math.PI / 2.5, z: 0 },
+                    name: 'Jawa Timur Park'
+                },
             ],
         };
 
