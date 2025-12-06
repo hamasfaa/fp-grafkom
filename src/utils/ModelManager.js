@@ -25,6 +25,28 @@ export class ModelManager {
                     name: 'Reog Ponorogo'
                 },
             ],
+            37: [
+                {
+                    path: './assets/models/jabar/sate_ayam.glb',
+                    scale: 0.8,
+                    name: 'Sate'
+                },
+                {
+                    path: './assets/models/jabar/angklung.glb',
+                    scale: 0.4,
+                    name: 'Angklung'
+                },
+                {
+                    path: './assets/models/jabar/golok.glb',
+                    scale: 0.5,
+                    name: 'Golok'
+                },
+                {
+                    path: './assets/models/jabar/rebab.glb',
+                    scale: 0.05,
+                    name: 'Rebab'
+                },
+            ],
         };
 
         this.platformModels = {
@@ -58,6 +80,36 @@ export class ModelManager {
                     rotation: { x: 0, y: -Math.PI / 2.5, z: 0 },
                     name: 'Jawa Timur Park'
                 },
+            ],
+            37: [
+                {
+                    path: './assets/models/jabar/gedung_sate.glb',
+                    scale: 0.1,
+                    position: { x: 0, y: 0.1, z: 1.5 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Gedung Sate'
+                },
+                {
+                    path: './assets/models/jabar/miniatur_candi_cangkuang.glb',
+                    scale: 3.0,
+                    position: { x: 0, y: -0.5, z: 8 },
+                    rotation: { x: 0, y: 4.5, z: 0 },
+                    name: 'Candi Cangkuang'
+                },
+                // {
+                //     path: './assets/models/jatim/suramadu.glb',
+                //     scale: 0.2,
+                //     position: { x: -6, y: 0.1, z: 2 },
+                //     rotation: { x: 0, y: Math.PI / 2.5, z: 0 },
+                //     name: 'Jembatan Suramadu'
+                // },
+                // {
+                //     path: './assets/models/jatim/jawa_timur_park_1.glb',
+                //     scale: 3.5,
+                //     position: { x: 6, y: 0.4, z: 2 },
+                //     rotation: { x: 0, y: -Math.PI / 2.5, z: 0 },
+                //     name: 'Jawa Timur Park'
+                // },
             ],
         };
 

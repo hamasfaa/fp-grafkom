@@ -20,7 +20,6 @@ export class MapLoader {
             'Kepulauan Bangka Belitung', // 8
             'Kepulauan Riau',          // 9
             'DKI Jakarta',             // 10
-            'Jawa Barat',              // 11
             'Jawa Tengah',             // 12
             'DI Yogyakarta',           // 13
             'Banten',                  // 15
@@ -28,8 +27,8 @@ export class MapLoader {
             'Nusa Tenggara Barat',     // 17
             'Nusa Tenggara Timur',     // 18
             'Kalimantan Barat',        // 19
-            'Jawa Timur',              // 14
             'Kalimantan Tengah',       // 20
+            'Jawa Timur',              // 14
             'Kalimantan Selatan',      // 21
             'Kalimantan Timur',        // 22
             'Kalimantan Utara',        // 23
@@ -43,6 +42,7 @@ export class MapLoader {
             'Maluku Utara',            // 31
             'Papua Barat',             // 32
             'Papua',                   // 33
+            'Jawa Barat',              // 11
         ];
     }
 
