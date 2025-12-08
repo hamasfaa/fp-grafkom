@@ -6,40 +6,44 @@ export class AudioManager {
         this.currentProvinceIndex = null;
 
         this.provincialMusic = [
-            './assets/music/aceh.mp3',           // 0 - Aceh
-            './assets/music/sumut.mp3',          // 1 - Sumatera Utara
-            './assets/music/sumbar.mp3',         // 2 - Sumatera Barat
-            './assets/music/riau.mp3',           // 3 - Riau
-            './assets/music/jambi.mp3',          // 4 - Jambi
-            './assets/music/sumsel.mp3',         // 5 - Sumatera Selatan
-            './assets/music/bengkulu.mp3',       // 6 - Bengkulu
-            './assets/music/lampung.mp3',        // 7 - Lampung
-            './assets/music/babel.mp3',          // 8 - Bangka Belitung
-            './assets/music/kepri.mp3',          // 9 - Kepulauan Riau
+            './assets/music/sulteng.mp3',        // 0 - Sulawesi Tengah
+            './assets/music/sulbar.mp3',         // 1 - Sulawesi Barat
+            './assets/music/sulsel.mp3',         // 2 - Sulawesi Selatan
+            './assets/music/papua.mp3',          // 3 - Papua Tengah
+            './assets/music/pabar.mp3',          // 4 - Papua Barat
+            './assets/music/gorontalo.mp3',      // 5 - Gorontalo
+            './assets/music/riau.mp3',           // 6 - Riau
+            './assets/music/papua.mp3',          // 7 - Papua Selatan
+            './assets/music/diy.mp3',            // 8 - DI Yogyakarta
+            './assets/music/sumbar.mp3',         // 9 - Sumatera Barat
             './assets/music/dki.mp3',            // 10 - DKI Jakarta
-            './assets/music/jabar.mp3',          // 11 - Jawa Barat
-            './assets/music/jateng.mp3',         // 12 - Jawa Tengah
-            './assets/music/diy.mp3',            // 13 - DI Yogyakarta
-            './assets/music/banten.mp3',         // 15 - Banten
-            './assets/music/bali.mp3',           // 16 - Bali
-            './assets/music/ntb.mp3',            // 17 - Nusa Tenggara Barat
-            './assets/music/ntt.mp3',            // 18 - Nusa Tenggara Timur
-            './assets/music/kalbar.mp3',         // 19 - Kalimantan Barat
-            './assets/music/jatim.mp3',          // 14 - Jawa Timur
-            './assets/music/kalteng.mp3',        // 20 - Kalimantan Tengah
-            './assets/music/kalsel.mp3',         // 21 - Kalimantan Selatan
-            './assets/music/kaltim.mp3',         // 22 - Kalimantan Timur
-            './assets/music/kaltara.mp3',        // 23 - Kalimantan Utara
-            './assets/music/sulut.mp3',          // 24 - Sulawesi Utara
-            './assets/music/sulteng.mp3',        // 25 - Sulawesi Tengah
-            './assets/music/sulsel.mp3',         // 26 - Sulawesi Selatan
-            './assets/music/sultra.mp3',         // 27 - Sulawesi Tenggara
-            './assets/music/gorontalo.mp3',      // 28 - Gorontalo
-            './assets/music/sulbar.mp3',         // 29 - Sulawesi Barat
-            './assets/music/maluku.mp3',         // 30 - Maluku
-            './assets/music/malut.mp3',          // 31 - Maluku Utara
-            './assets/music/pabar.mp3',          // 32 - Papua Barat
-            './assets/music/papua.mp3',          // 33 - Papua
+            './assets/music/maluku.mp3',         // 11 - Maluku
+            './assets/music/bengkulu.mp3',       // 12 - Bengkulu
+            './assets/music/lampung.mp3',        // 13 - Lampung
+            './assets/music/papua.mp3',          // 14 - Papua
+            './assets/music/kepri.mp3',          // 15 - Kepulauan Riau
+            './assets/music/ntb.mp3',            // 16 - Nusa Tenggara Barat
+            './assets/music/jambi.mp3',          // 17 - Jambi
+            './assets/music/bali.mp3',           // 18 - Bali
+            './assets/music/jatim.mp3',          // 19 - Jawa Timur
+            './assets/music/pabar.mp3',          // 20 - Papua Barat Daya
+            './assets/music/sumut.mp3',          // 21 - Sumatera Utara
+            './assets/music/sultra.mp3',         // 22 - Sulawesi Tenggara
+            './assets/music/ntt.mp3',            // 23 - Nusa Tenggara Timur
+            './assets/music/kalsel.mp3',         // 24 - Kalimantan Selatan
+            './assets/music/aceh.mp3',           // 25 - Aceh
+            './assets/music/kalteng.mp3',        // 26 - Kalimantan Tengah
+            './assets/music/papua.mp3',          // 27 - Papua Pegunungan
+            './assets/music/babel.mp3',          // 28 - Bangka Belitung
+            './assets/music/sumsel.mp3',         // 29 - Sumatera Selatan
+            './assets/music/banten.mp3',         // 30 - Banten
+            './assets/music/sulut.mp3',          // 31 - Sulawesi Utara
+            './assets/music/kaltara.mp3',        // 32 - Kalimantan Utara
+            './assets/music/kaltim.mp3',         // 33 - Kalimantan Timur
+            './assets/music/jateng.mp3',         // 34 - Jawa Tengah
+            './assets/music/malut.mp3',          // 35 - Maluku Utara
+            './assets/music/kalbar.mp3',         // 36 - Kalimantan Barat
+            './assets/music/jabar.mp3',          // 37 - Jawa Barat
         ];
 
         this.fallbackMusic = './assets/music/default.mp3';
@@ -381,13 +385,14 @@ export class AudioManager {
 
     getProvinceMusicInfo(index) {
         const provinceNames = [
-            'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi',
-            'Sumatera Selatan', 'Bengkulu', 'Lampung', 'Bangka Belitung', 'Kepulauan Riau',
-            'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'DI Yogyakarta',
-            'Banten', 'Bali', 'Nusa Tenggara Barat', 'Nusa Tenggara Timur',
-            'Kalimantan Barat', 'Jawa Timur', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Kalimantan Timur', 'Kalimantan Utara',
-            'Sulawesi Utara', 'Sulawesi Tengah', 'Sulawesi Selatan', 'Sulawesi Tenggara', 'Gorontalo', 'Sulawesi Barat',
-            'Maluku', 'Maluku Utara', 'Papua Barat', 'Papua'
+            'Sulawesi Tengah', 'Sulawesi Barat', 'Sulawesi Selatan', 'Papua Tengah', 'Papua Batar',
+            'Gorontalo', 'Riau', 'Papua Selatan', 'DI Yogyakarta', 'Sumatera Barat',
+            'DKI Jakarta', 'Maluku', 'Bengkulu', 'Lampung', 'Papua',
+            'Kepulauan Riau', 'Nusa Tenggara Barat', 'Jambi', 'Bali', 'Jawa Timur',
+            'Papua Barat Daya', 'Sumatera Utara', 'Sulawesi Tenggara', 'Nusa Tenggara Timur', 'Kalimantan Selatan',
+            'Aceh', 'Kalimantan Tengah', 'Papua Pegunungan', 'Bangka Belitung', 'Sumatera Selatan',
+            'Banten', 'Sulawesi Utara', 'Kalimantan Utara', 'Kalimantan Timur', 'Jawa Tengah',
+            'Maluku Utara', 'Kalimantan Barat', 'Jawa Barat'
         ];
         return provinceNames[index] || 'Unknown Province';
     }

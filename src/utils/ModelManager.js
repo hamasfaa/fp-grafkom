@@ -7,7 +7,7 @@ export class ModelManager {
         this.loadedModels = new Map();
 
         this.floatingModels = {
-            // Jawa Timur - 19
+            // Jawa Timur - index 19
             19: [
                 {
                     path: './assets/models/jatim/soto.glb',
@@ -25,6 +25,7 @@ export class ModelManager {
                     name: 'Reog Ponorogo'
                 },
             ],
+            // Jawa Barat - index 37
             37: [
                 {
                     path: './assets/models/jabar/sate_ayam.glb',
@@ -50,7 +51,7 @@ export class ModelManager {
         };
 
         this.platformModels = {
-            // Jawa Timur - 19
+            // Jawa Timur - index 19
             19: [
                 {
                     path: './assets/models/jatim/suroboyo.glb',
@@ -81,6 +82,7 @@ export class ModelManager {
                     name: 'Jawa Timur Park'
                 },
             ],
+            // Jawa Barat - index 37
             37: [
                 {
                     path: './assets/models/jabar/gedung_sate.glb',
@@ -96,20 +98,6 @@ export class ModelManager {
                     rotation: { x: 0, y: 4.5, z: 0 },
                     name: 'Candi Cangkuang'
                 },
-                // {
-                //     path: './assets/models/jatim/suramadu.glb',
-                //     scale: 0.2,
-                //     position: { x: -6, y: 0.1, z: 2 },
-                //     rotation: { x: 0, y: Math.PI / 2.5, z: 0 },
-                //     name: 'Jembatan Suramadu'
-                // },
-                // {
-                //     path: './assets/models/jatim/jawa_timur_park_1.glb',
-                //     scale: 3.5,
-                //     position: { x: 6, y: 0.4, z: 2 },
-                //     rotation: { x: 0, y: -Math.PI / 2.5, z: 0 },
-                //     name: 'Jawa Timur Park'
-                // },
             ],
         };
 
