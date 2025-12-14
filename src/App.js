@@ -48,7 +48,7 @@ export class App {
             this.rendererManager.getRenderer().domElement
         );
         this.setupControls();
-        
+
         // First person controls (will be activated in province mode)
         this.firstPersonControls = new FirstPersonControls(
             this.cameraManager.getCamera(),
@@ -179,7 +179,7 @@ export class App {
 
         const provinceIndex = province.userData.provinceIndex;
         this.transitionManager.createProvinceWorld(province.userData.name, provinceIndex);
-        
+
         // Set platform models for collision detection after world is created
         setTimeout(() => {
             if (this.firstPersonControls) {
@@ -208,6 +208,9 @@ export class App {
 
         this.showBackButton();
         this.showControlsHint();
+
+        // Enable first person controls (mouse + pointer lock)
+        this.firstPersonControls.enable();
 
         this.infoPanel.showProvinceMode(province.userData.name);
     }
@@ -278,10 +281,10 @@ export class App {
             }
         }, 100);
     }
-    
+
     showControlsHint() {
         let hint = document.getElementById('controls-hint');
-        
+
         if (!hint) {
             hint = document.createElement('div');
             hint.id = 'controls-hint';
@@ -300,7 +303,7 @@ export class App {
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 animation: fadeIn 0.5s ease-in-out;
             `;
-            
+
             hint.innerHTML = `
                 <div style="display: flex; gap: 2rem; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -308,22 +311,26 @@ export class App {
                         <span>Move</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">↑ ↓ ← →</kbd>
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">🖱️ Mouse</kbd>
                         <span>Look</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Shift</kbd>
-                        <span>Run</span>
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Space 2x</kbd>
+                        <span>Fly</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Space</kbd>
-                        <span>Jump</span>
+                        <span>Up / Jump</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem;">Shift</kbd>
+                        <span>Down / Run</span>
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(hint);
-            
+
             // Auto hide after 5 seconds
             setTimeout(() => {
                 hint.style.opacity = '0';
@@ -359,7 +366,7 @@ export class App {
         this.audioManager.stop();
 
         this.isInProvinceMode = false;
-        
+
         // Re-enable orbit controls fully
         this.controls.enabled = true;
         this.controls.enableRotate = true;
@@ -388,6 +395,9 @@ export class App {
         if (controlsPanel) controlsPanel.style.display = 'block';
 
         this.hideBackButton();
+
+        // Disable first person controls (release pointer lock)
+        this.firstPersonControls.disable();
 
         this.resetView();
     }
@@ -436,7 +446,7 @@ export class App {
 
     animate() {
         requestAnimationFrame(() => this.animate());
-        
+
         const delta = this.clock.getDelta();
 
         if (!this.isInProvinceMode) {
@@ -449,7 +459,7 @@ export class App {
                 this.provinceManager.getSelected()?.userData.name || null,
                 distance.toFixed(1)
             );
-            
+
             this.controls.update();
         } else {
             // Update first person controls in province mode
