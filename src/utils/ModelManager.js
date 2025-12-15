@@ -48,6 +48,24 @@ export class ModelManager {
                     name: 'Rebab'
                 },
             ],
+            //  Kalimantan Barat - index 36
+            36: [
+                {
+                    path: './assets/models/Kalbar/mandau_kalimantan.glb',
+                    scale: 50,
+                    name: 'Mandau Kalimantan'
+                },
+                {
+                    path: './assets/models/Kalbar/sapek_guitar.glb',
+                    scale: 0.6,
+                    name: 'Sapek Guitar'
+                },
+                {
+                    path: './assets/models/Kalbar/tameng_dayak.glb',
+                    scale: 0.4,
+                    name: 'Tameng Dayak'
+                },
+            ],
         };
 
         this.platformModels = {
@@ -97,6 +115,23 @@ export class ModelManager {
                     position: { x: 0, y: -0.5, z: 8 },
                     rotation: { x: 0, y: 4.5, z: 0 },
                     name: 'Candi Cangkuang'
+                },
+            ],
+            //Kalimantan Barat - index 36
+            36: [
+                {
+                    path: './assets/models/Kalbar/tugu_katulistiwa.glb',
+                    scale: 0.8,
+                    position: { x: -3, y: 0.7, z: 0 },
+                    rotation: { x: 0, y: 2, z: 0 },
+                    name: 'Tugu Khatulistiwa'
+                },
+                {
+                    path: './assets/models/Kalbar/Baju_Dayak_Perempuan.glb',
+                    scale: 1,
+                    position: { x: 3, y: 1.8, z: 5 },
+                    rotation: { x: 0, y: 4.5, z: 0 },
+                    name: 'Baju Adat Dayak'
                 },
             ],
         };
