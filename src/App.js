@@ -152,7 +152,14 @@ export class App {
             );
 
             this.controls.enabled = true;
-            this.modal.show(hoveredProvince.userData.name);
+
+            this.modal.show(
+                hoveredProvince.userData.name,
+                hoveredProvince.userData.provinceIndex,
+                () => {
+                    this.firstPersonControls.enable();
+                }
+            );
         }
     }
 
@@ -209,8 +216,6 @@ export class App {
         this.showBackButton();
         this.showControlsHint();
 
-        // Enable first person controls (mouse + pointer lock)
-        this.firstPersonControls.enable();
 
         this.infoPanel.showProvinceMode(province.userData.name);
     }

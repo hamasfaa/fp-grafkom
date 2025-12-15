@@ -1,0 +1,346 @@
+{
+  "provinces": [
+    {
+      "id": 0,
+      "name": "Sulawesi Tengah",
+      "population": "3,083,467",
+      "area": "61,841 km²",
+      "capital": "Palu",
+      "gdp": "$4.2 Billion",
+      "description": "Sulawesi Tengah is known for its diverse cultural heritage, including the unique megalithic culture in Lore Lindu National Park. The province is rich in natural resources, particularly nickel and gold mining, and features stunning landscapes from mountains to pristine beaches."
+    },
+    {
+      "id": 1,
+      "name": "Sulawesi Barat",
+      "population": "1,474,366",
+      "area": "16,787 km²",
+      "capital": "Mamuju",
+      "gdp": "$1.8 Billion",
+      "description": "Sulawesi Barat is the newest province in Sulawesi, established in 2004. It's known for its agricultural products, especially cocoa and coffee. The province features beautiful coastal areas and is home to the Mandar ethnic group with their rich maritime traditions."
+    },
+    {
+      "id": 2,
+      "name": "Sulawesi Selatan",
+      "population": "9,073,509",
+      "area": "46,717 km²",
+      "capital": "Makassar",
+      "gdp": "$14.5 Billion",
+      "description": "Sulawesi Selatan is a cultural and economic hub of eastern Indonesia. Makassar, its capital, is a major port city with a rich history. The province is famous for the Bugis and Makassar ethnic groups, known for their seafaring traditions, and for the stunning Tana Toraja region with its unique funeral ceremonies."
+    },
+    {
+      "id": 3,
+      "name": "Papua Tengah",
+      "population": "1,452,514",
+      "area": "61,418 km²",
+      "capital": "Nabire",
+      "gdp": "$2.1 Billion",
+      "description": "Papua Tengah is one of the newest provinces in Indonesia, created in 2022. The province features diverse ecosystems from mountains to coastlines, and is home to various indigenous Papuan tribes with unique cultures and languages. Rich in natural resources, it's developing its infrastructure and economy."
+    },
+    {
+      "id": 4,
+      "name": "Papua Barat",
+      "population": "1,134,068",
+      "area": "99,671 km²",
+      "capital": "Manokwari",
+      "gdp": "$3.5 Billion",
+      "description": "Papua Barat is known for its extraordinary biodiversity, including the Bird's Head Peninsula. The province has significant natural resources and is developing eco-tourism. Manokwari is known as the 'City of Gospel' where Christianity first arrived in Papua."
+    },
+    {
+      "id": 5,
+      "name": "Gorontalo",
+      "population": "1,171,681",
+      "area": "11,257 km²",
+      "capital": "Gorontalo",
+      "gdp": "$1.3 Billion",
+      "description": "Gorontalo is known for its beautiful coastal areas and diving spots, particularly at Olele Marine Park. The province has a strong agricultural sector, especially corn production, and is developing its fisheries industry. It's also known for its unique Gorontalo embroidery craft."
+    },
+    {
+      "id": 6,
+      "name": "Riau",
+      "population": "6,394,087",
+      "area": "87,024 km²",
+      "capital": "Pekanbaru",
+      "gdp": "$29.8 Billion",
+      "description": "Riau is one of Indonesia's wealthiest provinces, driven by oil and gas production, palm oil plantations, and pulp and paper industries. The province is culturally rich with Malay heritage and features the ancient Muara Takus temple complex. It's also known for traditional crafts and dance."
+    },
+    {
+      "id": 7,
+      "name": "Papua Selatan",
+      "population": "522,004",
+      "area": "129,715 km²",
+      "capital": "Merauke",
+      "gdp": "$1.9 Billion",
+      "description": "Papua Selatan, established in 2022, is known for its vast lowland areas and the Merauke Integrated Food and Energy Estate project. The province borders Papua New Guinea and has diverse indigenous cultures. It's developing its agricultural potential while preserving its unique ecosystems."
+    },
+    {
+      "id": 8,
+      "name": "DI Yogyakarta",
+      "population": "3,668,719",
+      "area": "3,133 km²",
+      "capital": "Yogyakarta",
+      "gdp": "$5.8 Billion",
+      "description": "Yogyakarta is Indonesia's cultural heart and the only province still governed by a sultanate. It's famous for the magnificent Borobudur and Prambanan temples, traditional batik and silver crafts, and as a center of Javanese culture and arts. The province is also a major educational hub."
+    },
+    {
+      "id": 9,
+      "name": "Sumatera Barat",
+      "population": "5,534,472",
+      "area": "42,013 km²",
+      "capital": "Padang",
+      "gdp": "$8.2 Billion",
+      "description": "Sumatera Barat is the homeland of the Minangkabau people, known for their matrilineal society and distinctive traditional houses with horn-shaped roofs. The province is famous for its spicy Padang cuisine, beautiful Lake Maninjau, and rich cultural traditions. It's a major producer of coal and cement."
+    },
+    {
+      "id": 10,
+      "name": "DKI Jakarta",
+      "population": "10,562,088",
+      "area": "664 km²",
+      "capital": "Jakarta",
+      "gdp": "$186.5 Billion",
+      "description": "Jakarta is Indonesia's capital and largest city, serving as the nation's economic, cultural, and political center. As a special capital region, it's a melting pot of cultures from across Indonesia and the world. The province is a major financial hub in Southeast Asia with modern skyscrapers, shopping centers, and a vibrant nightlife."
+    },
+    {
+      "id": 11,
+      "name": "Maluku",
+      "population": "1,848,923",
+      "area": "46,914 km²",
+      "capital": "Ambon",
+      "gdp": "$2.4 Billion",
+      "description": "Maluku, historically known as the Spice Islands, was the world's only source of nutmeg and cloves. The province consists of over 1,000 islands with rich marine biodiversity. It has a unique history of Portuguese and Dutch colonial influence, reflected in its architecture, culture, and cuisine."
+    },
+    {
+      "id": 12,
+      "name": "Bengkulu",
+      "population": "2,010,670",
+      "area": "19,919 km²",
+      "capital": "Bengkulu",
+      "gdp": "$2.1 Billion",
+      "description": "Bengkulu has a unique history as a former British colony and is where Sukarno, Indonesia's first president, was exiled. The province is known for its beautiful beaches, traditional textiles, and the Rafflesia arnoldii, the world's largest flower. It's developing its agricultural and fisheries sectors."
+    },
+    {
+      "id": 13,
+      "name": "Lampung",
+      "population": "9,007,848",
+      "area": "34,624 km²",
+      "capital": "Bandar Lampung",
+      "gdp": "$11.3 Billion",
+      "description": "Lampung is the gateway to Sumatra from Java, connected by the Sunda Strait. The province is known for its coffee production, traditional handwoven textiles called 'tapis,' and beautiful coastal areas. Way Kambas National Park is home to endangered Sumatran elephants and rhinos."
+    },
+    {
+      "id": 14,
+      "name": "Papua",
+      "population": "4,303,707",
+      "area": "319,036 km²",
+      "capital": "Jayapura",
+      "gdp": "$15.2 Billion",
+      "description": "Papua is Indonesia's easternmost and largest province, known for its extraordinary cultural and biological diversity. Home to hundreds of indigenous tribes, each with unique languages and traditions. The province features stunning landscapes from snow-capped Puncak Jaya to pristine Raja Ampat islands, and is rich in natural resources including gold and copper."
+    },
+    {
+      "id": 15,
+      "name": "Kepulauan Riau",
+      "population": "2,064,564",
+      "area": "8,202 km²",
+      "capital": "Tanjung Pinang",
+      "gdp": "$7.8 Billion",
+      "description": "Kepulauan Riau is an archipelagic province consisting of about 2,000 islands, including Batam and Bintan. Its strategic location near Singapore has made it a major industrial and trade hub. The province has a strong Malay culture and is developing eco-tourism with beautiful beaches and marine parks."
+    },
+    {
+      "id": 16,
+      "name": "Nusa Tenggara Barat",
+      "population": "5,320,092",
+      "area": "18,572 km²",
+      "capital": "Mataram",
+      "gdp": "$6.1 Billion",
+      "description": "Nusa Tenggara Barat consists of Lombok and Sumbawa islands. The province is famous for Mount Rinjani, Indonesia's second-highest volcano, and the beautiful Gili Islands. It has a rich Sasak culture, traditional weaving industries, and is developing as a major tourist destination."
+    },
+    {
+      "id": 17,
+      "name": "Jambi",
+      "population": "3,548,228",
+      "area": "50,058 km²",
+      "capital": "Jambi",
+      "gdp": "$7.4 Billion",
+      "description": "Jambi is rich in historical heritage, including the ancient Muaro Jambi temple complex from the Srivijaya kingdom. The province has extensive palm oil plantations and rubber production. It's also known for traditional batik and is developing eco-tourism in its national parks."
+    },
+    {
+      "id": 18,
+      "name": "Bali",
+      "population": "4,317,404",
+      "area": "5,780 km²",
+      "capital": "Denpasar",
+      "gdp": "$17.2 Billion",
+      "description": "Bali is Indonesia's most famous tourist destination, known worldwide for its stunning beaches, terraced rice paddies, ancient temples, and unique Hindu culture. The island is a center for arts, dance, and crafts. Despite its small size, it contributes significantly to Indonesia's economy through tourism and creative industries."
+    },
+    {
+      "id": 19,
+      "name": "Jawa Timur",
+      "population": "40,665,696",
+      "area": "47,800 km²",
+      "capital": "Surabaya",
+      "gdp": "$52.8 Billion",
+      "description": "Jawa Timur is Indonesia's second most populous province and a major industrial center. Surabaya, the capital, is Indonesia's second-largest city and an important port. The province is known for Mount Bromo volcano, ancient Hindu temples in Trowulan, and diverse cultural heritage from Javanese to Madurese traditions."
+    },
+    {
+      "id": 20,
+      "name": "Papua Barat Daya",
+      "population": "405,589",
+      "area": "36,249 km²",
+      "capital": "Sorong",
+      "gdp": "$1.7 Billion",
+      "description": "Papua Barat Daya, established in 2022, is known for Sorong city, the gateway to Raja Ampat. The province has incredible marine biodiversity and is developing eco-tourism. It's also rich in natural resources including oil and gas, while maintaining indigenous Papuan cultures."
+    },
+    {
+      "id": 21,
+      "name": "Sumatera Utara",
+      "population": "14,799,361",
+      "area": "72,981 km²",
+      "capital": "Medan",
+      "gdp": "$22.3 Billion",
+      "description": "Sumatera Utara is culturally diverse, home to Batak, Malay, and other ethnic groups. The province features Lake Toba, the world's largest volcanic lake, and Medan, a major commercial hub. It's a leading producer of palm oil, rubber, and is known for its coffee and cultural heritage sites."
+    },
+    {
+      "id": 22,
+      "name": "Sulawesi Tenggara",
+      "population": "2,624,875",
+      "area": "38,068 km²",
+      "capital": "Kendari",
+      "gdp": "$4.8 Billion",
+      "description": "Sulawesi Tenggara is known for its nickel mining industry, one of the largest in the world. The province has beautiful marine parks including Wakatobi, a world-class diving destination. It's home to various ethnic groups including Tolaki, Muna, and Buton, each with rich cultural traditions."
+    },
+    {
+      "id": 23,
+      "name": "Nusa Tenggara Timur",
+      "population": "5,325,566",
+      "area": "48,718 km²",
+      "capital": "Kupang",
+      "gdp": "$3.9 Billion",
+      "description": "Nusa Tenggara Timur consists of hundreds of islands including Flores, Sumba, and Komodo. The province is famous for Komodo National Park, home to the Komodo dragon. It has rich indigenous cultures, traditional ikat weaving, and unique megalithic traditions in Sumba."
+    },
+    {
+      "id": 24,
+      "name": "Kalimantan Selatan",
+      "population": "4,182,695",
+      "area": "38,744 km²",
+      "capital": "Banjarmasin",
+      "gdp": "$8.7 Billion",
+      "description": "Kalimantan Selatan is known as the 'River City' due to its extensive river network and floating markets. The province is rich in coal, diamonds, and other minerals. It's home to the Banjar people with their distinctive culture, and features unique wetland ecosystems."
+    },
+    {
+      "id": 25,
+      "name": "Aceh",
+      "population": "5,274,871",
+      "area": "57,956 km²",
+      "capital": "Banda Aceh",
+      "gdp": "$6.2 Billion",
+      "description": "Aceh is Indonesia's westernmost province with a special autonomous status, allowing Sharia law implementation. It has a rich Islamic heritage as the 'Veranda of Mecca' where Islam first entered Indonesia. The province recovered from the devastating 2004 tsunami and is known for coffee, natural gas, and beautiful beaches."
+    },
+    {
+      "id": 26,
+      "name": "Kalimantan Tengah",
+      "population": "2,669,969",
+      "area": "153,564 km²",
+      "capital": "Palangkaraya",
+      "gdp": "$5.4 Billion",
+      "description": "Kalimantan Tengah is Indonesia's third-largest province with vast tropical rainforests and peatlands. It's home to the Dayak people and their rich traditions. The province is known for its orangutan conservation efforts, traditional longhouses, and is developing sustainable palm oil and rubber industries."
+    },
+    {
+      "id": 27,
+      "name": "Papua Pegunungan",
+      "population": "1,448,360",
+      "area": "95,262 km²",
+      "capital": "Jayawijaya",
+      "gdp": "$1.4 Billion",
+      "description": "Papua Pegunungan, established in 2022, encompasses the mountainous highlands of Papua. The province is home to the Dani and Lani tribes with their unique highland cultures. It features stunning mountain landscapes, traditional villages, and is developing infrastructure while preserving indigenous ways of life."
+    },
+    {
+      "id": 28,
+      "name": "Bangka Belitung",
+      "population": "1,455,678",
+      "area": "16,424 km²",
+      "capital": "Pangkal Pinang",
+      "gdp": "$4.2 Billion",
+      "description": "Bangka Belitung is an archipelago known for tin mining, which has been its economic backbone for centuries. The province has beautiful white-sand beaches with unique granite rock formations. It's developing eco-tourism and is famous for its seafood cuisine and pepper production."
+    },
+    {
+      "id": 29,
+      "name": "Sumatera Selatan",
+      "population": "8,467,432",
+      "area": "91,592 km²",
+      "capital": "Palembang",
+      "gdp": "$16.8 Billion",
+      "description": "Sumatera Selatan is home to Palembang, one of Indonesia's oldest cities and former capital of Srivijaya empire. The province is known for pempek (fish cakes), songket weaving, and oil and gas production. It hosted the 2018 Asian Games and features the historic Musi River."
+    },
+    {
+      "id": 30,
+      "name": "Banten",
+      "population": "11,904,562",
+      "area": "9,663 km²",
+      "capital": "Serang",
+      "gdp": "$35.7 Billion",
+      "description": "Banten is a major industrial province neighboring Jakarta, home to many factories and the Soekarno-Hatta International Airport. The province has historical significance with the Banten Sultanate heritage. It features beautiful beaches, the volcanic Krakatau island, and traditional martial art Pencak Silat Cimande."
+    },
+    {
+      "id": 31,
+      "name": "Sulawesi Utara",
+      "population": "2,621,923",
+      "area": "13,852 km²",
+      "capital": "Manado",
+      "gdp": "$5.9 Billion",
+      "description": "Sulawesi Utara is known for its stunning Bunaken Marine Park, a world-class diving destination. The Minahasan people are predominantly Christian with a unique culture. The province is famous for its spicy cuisine, including the extreme 'Dabu-dabu' salsa, coconut production, and beautiful volcanic landscapes."
+    },
+    {
+      "id": 32,
+      "name": "Kalimantan Utara",
+      "population": "701,814",
+      "area": "75,467 km²",
+      "capital": "Tanjung Selor",
+      "gdp": "$3.2 Billion",
+      "description": "Kalimantan Utara is Indonesia's youngest province, established in 2012. It borders Malaysia and has significant coal and palm oil industries. The province is home to diverse Dayak communities and features pristine rainforests. It's developing infrastructure while balancing economic growth with conservation."
+    },
+    {
+      "id": 33,
+      "name": "Kalimantan Timur",
+      "population": "3,721,389",
+      "area": "129,067 km²",
+      "capital": "Samarinda",
+      "gdp": "$24.5 Billion",
+      "description": "Kalimantan Timur is one of Indonesia's wealthiest provinces due to oil, gas, and coal resources. The capital is being moved to the new Nusantara capital city located here. The province features rich biodiversity, orangutan conservation centers, and traditional Dayak culture alongside modern development."
+    },
+    {
+      "id": 34,
+      "name": "Jawa Tengah",
+      "population": "36,516,035",
+      "area": "32,801 km²",
+      "capital": "Semarang",
+      "gdp": "$38.4 Billion",
+      "description": "Jawa Tengah is the cultural heart of Java, home to the ancient kingdoms of Mataram. The province features Borobudur and Prambanan temples, UNESCO World Heritage sites. It's known for batik crafts, traditional gamelan music, and Javanese culture. Solo and Semarang are major cultural and economic centers."
+    },
+    {
+      "id": 35,
+      "name": "Maluku Utara",
+      "population": "1,282,937",
+      "area": "31,983 km²",
+      "capital": "Sofifi",
+      "gdp": "$1.6 Billion",
+      "description": "Maluku Utara consists of over 1,000 islands and was historically part of the famous Spice Islands. The province is rich in nutmeg, cloves, and marine resources. It features beautiful volcanic islands, unique cultural heritage, and is developing nickel mining and tourism industries."
+    },
+    {
+      "id": 36,
+      "name": "Kalimantan Barat",
+      "population": "5,414,390",
+      "area": "147,307 km²",
+      "capital": "Pontianak",
+      "gdp": "$9.8 Billion",
+      "description": "Kalimantan Barat is unique as the only province crossed by the equator. Pontianak serves as a strategic trade hub with neighboring Malaysia. The province is culturally diverse with Dayak, Malay, and Chinese communities. It's known for palm oil, rubber, and features vast tropical rainforests and river systems."
+    },
+    {
+      "id": 37,
+      "name": "Jawa Barat",
+      "population": "48,274,162",
+      "area": "35,378 km²",
+      "capital": "Bandung",
+      "gdp": "$58.6 Billion",
+      "description": "Jawa Barat is Indonesia's most populous province and a major economic powerhouse. Bandung, known as the 'Paris of Java,' is a creative and educational hub. The province is known for Sundanese culture, beautiful highlands, tea plantations, and is a center for fashion, technology, and manufacturing industries."
+    }
+  ]
+}
