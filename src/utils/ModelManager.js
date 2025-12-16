@@ -90,12 +90,12 @@ export class ModelManager {
             3: [
                 {
                     path: './assets/models/Papua/traditional_musical_instrument_papua_indonesia.glb',
-                    scale: 1.2,
+                    scale: 0.8,
                     name: 'Traditional Musical Instrument'
                 },
                 {
                     path: './assets/models/Papua/tifa.glb',
-                    scale: 1.5,
+                    scale: 2.0,
                     name: 'Tifa'
                 },
             ],
@@ -213,14 +213,14 @@ export class ModelManager {
                 {
                     path: './assets/models/Papua/rumah_adat_honai_papua.glb',
                     scale: 4.5,
-                    position: { x: 0, y: 0.1, z: 2 },
+                    position: { x: 0, y: 1, z: 2 },
                     rotation: { x: 0, y: 0, z: 0 },
                     name: 'Rumah Honai'
                 },
                 {
                     path: './assets/models/Papua/sacred_totem_tribal_glb__fbx__textures.glb',
                     scale: 1.5,
-                    position: { x: -4, y: 0.5, z: -2 },
+                    position: { x: -4, y: 1.0, z: -2 },
                     rotation: { x: 0, y: Math.PI / 4, z: 0 },
                     name: 'Sacred Totem'
                 },
