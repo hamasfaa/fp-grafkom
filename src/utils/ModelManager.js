@@ -7,6 +7,24 @@ export class ModelManager {
         this.loadedModels = new Map();
 
         this.floatingModels = {
+            // Bali - index 18
+            18: [
+                {
+                    path: './assets/models/Bali/Barong.glb',
+                    scale: 0.03,
+                    name: 'Barong'
+                },
+                {
+                    path: './assets/models/Bali/jalak_bali.glb',
+                    scale: 10,
+                    name: 'Jalak Bali'
+                },
+                {
+                    path: './assets/models/Bali/canggahwang_ukir.glb',
+                    scale: 8,
+                    name: 'Ukiran'
+                },
+            ],
             // Jawa Timur - index 19
             19: [
                 {
@@ -93,6 +111,37 @@ export class ModelManager {
 
 
         this.platformModels = {
+            // Bali - index 18
+            18: [
+                {
+                    path: './assets/models/Bali/candi_bentar.glb',
+                    scale: 0.9,
+                    position: { x: 0, y: 0.1, z: 1.5 },
+                    rotation: { x: 0, y: 135, z: 0 },
+                    name: 'Candi'
+                },
+                {
+                    path: './assets/models/Bali/Baju_Adat_Bali.glb',
+                    scale: 0.01,
+                    position: { x: 100, y: 1.8, z: 10 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Baju Adat'
+                },
+                {
+                    path: './assets/models/Bali/pura_bali.glb',
+                    scale: 0.08,
+                    position: { x: -8, y: -0.5, z: 3 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Pura'
+                },
+                {
+                    path: './assets/models/Bali/pura_bali.glb',
+                    scale: 0.08,
+                    position: { x: 8, y: -0.5, z: 3 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Pura'
+                },
+            ],
             // Jawa Timur - index 19
             19: [
                 {
