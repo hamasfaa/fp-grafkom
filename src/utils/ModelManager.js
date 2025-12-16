@@ -66,7 +66,31 @@ export class ModelManager {
                     name: 'Tameng Dayak'
                 },
             ],
+            // Papua Provinces - indices 3, 7, 14, 20, 27 (from AudioManager mapping)
+            // All Papua variants (Tengah, Selatan, Papua, Barat Daya, Pegunungan) use same models
+            // Traditional musical instrument and tifa float/rotate
+            3: [
+                {
+                    path: './assets/models/Papua/traditional_musical_instrument_papua_indonesia.glb',
+                    scale: 1.2,
+                    name: 'Traditional Musical Instrument'
+                },
+                {
+                    path: './assets/models/Papua/tifa.glb',
+                    scale: 1.5,
+                    name: 'Tifa'
+                },
+            ],
         };
+
+        // Map all Papua province indices to the same configuration
+        this.floatingModels[7] = this.floatingModels[3];   // Papua Selatan
+        this.floatingModels[14] = this.floatingModels[3];  // Papua
+        this.floatingModels[20] = this.floatingModels[3];  // Papua Barat Daya
+        this.floatingModels[27] = this.floatingModels[3];  // Papua Pegunungan
+        this.floatingModels[91] = this.floatingModels[3];  // Papua Tengah (from GeoJSON)
+        this.floatingModels[92] = this.floatingModels[3];  // Papua Barat (from GeoJSON)
+
 
         this.platformModels = {
             // Jawa Timur - index 19
@@ -134,7 +158,41 @@ export class ModelManager {
                     name: 'Baju Adat Dayak'
                 },
             ],
+            // Papua Provinces - indices 3, 7, 14, 20, 27, 91, 92
+            // All models on platform (static, not rotating)
+            3: [
+                {
+                    path: './assets/models/Papua/rumah_adat_honai_papua.glb',
+                    scale: 4.5,
+                    position: { x: 0, y: 0.1, z: 2 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    name: 'Rumah Honai'
+                },
+                {
+                    path: './assets/models/Papua/sacred_totem_tribal_glb__fbx__textures.glb',
+                    scale: 1.5,
+                    position: { x: -4, y: 0.5, z: -2 },
+                    rotation: { x: 0, y: Math.PI / 4, z: 0 },
+                    name: 'Sacred Totem'
+                },
+                {
+                    path: './assets/models/Papua/baju_adat_papua.glb',
+                    scale: 1.0,
+                    position: { x: 3, y: 0.5, z: 3 },
+                    rotation: { x: 0, y: -Math.PI / 2, z: 0 },
+                    name: 'Baju Adat Papua'
+                },
+            ],
         };
+
+        // Map all Papua province indices to the same platform configuration
+        this.platformModels[7] = this.platformModels[3];   // Papua Selatan
+        this.platformModels[14] = this.platformModels[3];  // Papua
+        this.platformModels[20] = this.platformModels[3];  // Papua Barat Daya
+        this.platformModels[27] = this.platformModels[3];  // Papua Pegunungan
+        this.platformModels[91] = this.platformModels[3];  // Papua Tengah (from GeoJSON)
+        this.platformModels[92] = this.platformModels[3];  // Papua Barat (from GeoJSON)
+
 
         this.fallbackModels = [
             './assets/models/default/cube.glb',
